@@ -25,20 +25,17 @@ jobs:
               path: ~/.sonar/cache
               key: ${{ runner.os }}-sonar
               restore-keys: ${{ runner.os }}-sonar
-          - name: Change to Simple API Directory
-            run: cd simple-api
           - name: Cache Maven packages
             uses: actions/cache@v3
             with:
               path: ~/.m2/simple-api/
               key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
               restore-keys: ${{ runner.os }}-m2
-          
           - name: Build and analyze
             env:
               GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
               SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-            run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=azertyben2000_devops-livecoding
+            run: mvn -B verify --file simple-api/pom.xml org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=azertyben2000_devops-livecoding
 
     test-backend: 
         runs-on: ubuntu-22.04
