@@ -13,5 +13,5 @@
     env:
       DATABASE_URL: "postgresql://user:pwd@tp_devops_database:80/db"
     networks:
-      - name: benjamin.courtois.takima.cloud
+      - name: benjamin.courtois.takima.cloud 
 
