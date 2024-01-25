@@ -20,17 +20,20 @@ jobs:
         with:
             context: ./simple-api
             tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-simple-api:latest
+            push: true
 
       - name: Build and push database image
         uses: docker/build-push-action@v3
         with:
             context: ./database
             tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-database:latest
+            push: true
 
       - name: Build and push httpd image
         uses: docker/build-push-action@v3
         with:
             context: ./http-server
             tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:latest 
+            push: true
         
                 
