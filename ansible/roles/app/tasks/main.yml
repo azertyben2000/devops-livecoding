@@ -5,7 +5,7 @@
     name: my-api
     image: azertyben2000/tp-devops-simple-api:latest
     env:
-      DATABASE_URL: "postgresql://user:pwd@my-db:80/db"
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://my-db:5432/db"
     networks:
       - name: my-network
 
