@@ -8,10 +8,10 @@
 
 - name: Run application container
   docker_container:
-    name: tp_devops_simple_api
+    name: my-app
     image: azertyben2000/tp-devops-simple-api:latest
     env:
       DATABASE_URL: "postgresql://user:pwd@tp_devops_database:80/db"
     networks:
-      - name: benjamin.courtois.takima.cloud
+      - name: my-network
 

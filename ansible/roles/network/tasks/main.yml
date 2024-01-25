@@ -2,5 +2,5 @@
 # tasks file for roles/network
 - name: Create network for the application
   docker_network:
-    name: benjamin.courtois.takima.cloud
+    name: my-network
     state: present
