@@ -1,0 +1,10 @@
+---
+# tasks file for roles/proxy
+- name: Run proxy container
+  docker_container:
+    name: tp_devops_httpd
+    image: azertyben2000/tp-devops-httpd:latest
+    ports:
+      - "80:80"
+    networks:
+      - name: benjamin.courtois.takima.cloud
