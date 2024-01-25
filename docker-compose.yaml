@@ -19,15 +19,25 @@ services:
 
   httpd:
     build: ./http-server
+    container_name: my-httpd
     ports:
       - "80:80"
     networks:
       - my-network
     depends_on:
       - backend
+      - frontend
 
-volumes:
-  db-volume:
+  frontend:
+    build: ./devops-front
+    container_name: my-front-end
+    networks:
+      - my-network
+    ports:
+      - "8080:80"
 
 networks:
   my-network:
+
+volumes:
+  db-volume:

@@ -1,4 +1,2 @@
-.idea
-.vscode/
-simple-api/target/
-.DS_Store
+target/
+id_rsa

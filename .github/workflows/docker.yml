@@ -1,0 +1,80 @@
+# docker.yml
+# this is the part of the workflow that builds the docker image
+# and pushes it to dockerhub
+name: build-and-push-docker-image
+
+on:
+  workflow_call:
+    inputs:
+      back_end_path:
+        type: string
+        description: 'Path to the backend'
+        default: './simple-api'
+        required: true
+      database_path:
+        type: string
+        description: 'Path to the database'
+        default: './database'
+        required: true
+      httpd_server_path:
+        type: string
+        description: 'Path to the httpd server'
+        default: './http-server'
+        required: true
+      front_end_path:
+        type: string
+        description: 'path to the front end'
+        default: './devops-front'
+        required: true
+    secrets:
+      DOCKERHUB_TOKEN:
+        description: 'Docker token'
+        required: true
+      DOCKERHUB_USERNAME:
+        description: 'Docker username'
+        required: true
+jobs:
+  build-and-push-docker-image:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Login to DockerHub
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+        
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build image and push backend
+        uses: docker/build-push-action@v3
+        with:
+          # relative path to the place where source code with Dockerfile is located
+          # the docker file is in the root of the project
+          context: ${{ inputs.back_end_path }}
+          # Note: tags has to be all lower-case
+          tags:  ${{secrets.DOCKERHUB_USERNAME}}/tp-devops-simple-api
+          # push to dockerhub only when code is pushed to main branch
+          push: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build image and push database
+        uses: docker/build-push-action@v3
+        with:
+          # relative path to the place where source code with Dockerfile is located
+          context: ${{ inputs.database_path }}
+          # DO the same for database
+          tags:  ${{secrets.DOCKERHUB_USERNAME}}/tp-devops-database
+
+          push: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build image and push httpd
+        uses: docker/build-push-action@v3
+        with:
+          # relative path to the place where source code with Dockerfile is located
+          context: ${{ inputs.httpd_server_path }}
+          tags:  ${{secrets.DOCKERHUB_USERNAME}}/tp-devops-httpd
+          push: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build image and push my-front-end
+        uses: docker/build-push-action@v3
+        with: 
+          context: ${{ inputs.front_end_path }}
+          tags:  ${{secrets.DOCKERHUB_USERNAME}}/my-front-end
+          push: ${{ github.ref == 'refs/heads/main' }}

@@ -1,0 +1,30 @@
+name: CI devops 2024 all
+on:
+  #to begin you want to launch this job in main and develop
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  back_end_tests:
+    uses: ./.github/workflows/backend_test.yml
+    with:
+      project_key: 'azertyben2000_devops-livecoding'
+      organization: 'azertyben2000'
+      pom_path: './simple-api/pom.xml'
+    secrets:
+      SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
+
+  # Use the docker.yml file and the backend_test.yml file to do the CI/CD
+  # only run this job when it is pushed to main branch
+  build_and_push_docker_image:
+    needs: back_end_tests
+    uses: ./.github/workflows/docker.yml
+    with:
+      back_end_path: './simple-api'
+      database_path: './database'
+      httpd_server_path: './http-server'
+      front_end_path: './devops-front'
+    secrets:
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}

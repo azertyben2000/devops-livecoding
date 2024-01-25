@@ -1,0 +1,59 @@
+# backend_test.yml
+# This is the workflow for the backend tests
+name: Backend tests
+
+on:
+  workflow_call:
+    inputs:
+      project_key:
+        type: string
+        description: 'Sonar project key'
+        default: 'azertyben2000_devops-livecoding'
+        required: false
+      organization:
+        type: string
+        description: 'Sonar organization'
+        default: 'azertyben2000'
+        required: true
+      pom_path:
+        type: string
+        description: 'Path to the pom.xml'
+        default: './simple-api/pom.xml'
+        required: true
+    secrets:
+      SONAR_TOKEN:
+        description: 'Sonar token'
+        required: true
+
+jobs:
+  backend-tests:
+    runs-on: ubuntu-22.04
+    outputs:
+      output1: ${{ steps.set-output.outputs.output1 }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'zulu' # Alternative distribution options are available.
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -B verify sonar:sonar -Dsonar.projectKey=${{inputs.project_key}} -Dsonar.organization=${{inputs.organization}} -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }} --file ${{inputs.pom_path}}
