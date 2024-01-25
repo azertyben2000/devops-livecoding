@@ -67,6 +67,7 @@ jobs:
             with:
                 context: ./simple-api
                 tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-simple-api:latest
+                push: ${{ github.ref == 'refs/heads/main' }}
 
             # Repeat similar steps for building and pushing database and httpd images
           - name: Build and push database image
@@ -74,12 +75,14 @@ jobs:
             with:
                 context: ./database
                 tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-database:latest
+                push: ${{ github.ref == 'refs/heads/main' }}
     
           - name: Build and push httpd image
             uses: docker/build-push-action@v3
             with:
                 context: ./http-server
                 tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:latest 
+                push: ${{ github.ref == 'refs/heads/main' }}
         
 
 
