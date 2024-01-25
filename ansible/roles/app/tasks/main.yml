@@ -1,11 +1,5 @@
 ---
 # tasks file for roles/app
-- name: Wait for the database to be ready
-  ansible.builtin.wait_for:
-    host: postgresql://user:pwd@tp_devops_database:80/db
-    state: started
-    timeout: 60
-
 - name: Run application container
   docker_container:
     name: my-api
