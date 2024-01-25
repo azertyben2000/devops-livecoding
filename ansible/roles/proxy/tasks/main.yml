@@ -2,7 +2,7 @@
 # tasks file for roles/proxy
 - name: Run proxy container
   docker_container:
-    name: my-proxy
+    name: httpd
     image: azertyben2000/tp-devops-httpd:latest
     ports:
       - "80:80"
